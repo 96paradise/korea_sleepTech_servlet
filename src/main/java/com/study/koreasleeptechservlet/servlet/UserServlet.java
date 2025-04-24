@@ -22,8 +22,8 @@ package com.study.koreasleeptechservlet.servlet;
 
 // jakarta.servlet: 서블릿 관련 기본 인터페이스 제공
 
-import com.study.korea_sleeptech_servlet.dao.UserDao;
-import com.study.korea_sleeptech_servlet.model.User;
+import com.study.koreasleeptechservlet.dao.UserDao;
+import com.study.koreasleeptechservlet.model.User;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -79,6 +79,9 @@ public class UserServlet extends HttpServlet {
                     break;
                 case "/delete": // 사용자 삭제
                     deleteUser(request, response);
+                    break;
+                case "/list":
+                    listUser(request, response);
                     break;
                 default: // 사용자 목록 출력 (기본 동작)
                     listUser(request, response);

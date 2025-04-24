@@ -1,6 +1,6 @@
 package com.study.koreasleeptechservlet.dao;
 
-public class Usersql {
+public class UserSql {
     public static final String INSERT = "INSERT INTO user (name, email, country) VALUES(?, ?, ?)";
     public static final String SELECT_BY_ID = "SELECT * FROM user WHERE id = ?";
     public static final String SELECT_ALL = "SELECT * FROM user";
