@@ -1,0 +1,83 @@
+package com.study.koreasleeptechservlet.order_app.dao.impl;
+
+import com.study.koreasleeptechservlet.order_app.dao.UserDao;
+import com.study.koreasleeptechservlet.order_app.db.DBConnection;
+import com.study.koreasleeptechservlet.order_app.entity.User;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.study.koreasleeptechservlet.dao.UserSql.INSERT;
+
+public class UserDaoImpl implements UserDao {
+    private final Connection conn = DBConnection.getInstance().getConnection();
+
+    private final String INSERT_SQL = "INSERT INTO user (name, email) VALUES (?, ?)";
+    private final String FIND_BY_EMAIL = "SELECT * FROM user WHERE email = ?";
+    private final String FIND_BY_ID = "SELECT * FROM user WHERE id = ?";
+    private final String FIND_ALL = "SELECT * FROM user";
+
+    @Override
+    public boolean save(User user) {
+        try(PreparedStatement pstmt = conn.prepareStatement(INSERT)) {
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getEmail());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    @Override
+    public List<User> findAll() {
+        List<User> users = new ArrayList<>();
+        try(Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(FIND_ALL)
+        ) {
+            while(rs.next()) {
+                User user = new User (rs.getString("name"), rs.getString("email"));
+                user.setId(rs.getInt("id"));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        try(PreparedStatement pstmt = conn.prepareStatement(FIND_BY_EMAIL)) {
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()) {
+                User user = new User (rs.getString("name"), rs.getString("email"));
+                user.setId(rs.getInt("id"));
+                return user;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public User findById(int id) {
+        try (PreparedStatement pstmt = conn.prepareStatement(FIND_BY_ID)) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()) {
+                User user = new User (rs.getString("name"), rs.getString("email"));
+                user.setId(rs.getInt("id"));
+                return user;
+        }
+        return null;
+    }
+}

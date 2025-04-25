@@ -1,0 +1,11 @@
+package com.study.koreasleeptechservlet.order_app.dao;
+
+import com.study.koreasleeptechservlet.order_app.entity.Order;
+
+import java.util.List;
+
+// 주문 정보 DAO 인터페이스
+public interface OrderDao {
+    boolean save(Order order);
+    List<Order> findByUserId(int userId);
+}
