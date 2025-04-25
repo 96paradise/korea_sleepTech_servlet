@@ -7,11 +7,13 @@ import com.study.koreasleeptechservlet.order_app.dao.impl.UserDaoImpl;
 import com.study.koreasleeptechservlet.order_app.entity.Order;
 import com.study.koreasleeptechservlet.order_app.entity.User;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/order")
 public class OrderController extends HttpServlet {
@@ -36,5 +38,28 @@ public class OrderController extends HttpServlet {
         Order order = new Order(userId, productName, amount);
         boolean result = orderDao.save(order);
         response.getWriter().println(result ? "주문 완료" : "주문 실패");
+        request.getRequestDispatcher("/order-app/orderForm.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        request.setCharacterEncoding("UTF-8");
+        String userIdParam = request.getParameter("userId");
+        List<Order> orderList;
+
+        if (userIdParam != null && !userIdParam.isEmpty()) {
+            try {
+                int userId = Integer.parseInt(userIdParam);
+                orderList = orderDao.findByUserId(userId);
+
+            } catch (NumberFormatException e) {
+                orderList = orderDao.findAll();
+            }
+        } else {
+            orderList = orderDao.findAll(); // 파라미터가 없으면 전체 조회
+        }
+
+        request.setAttribute("orderList", orderList);
+        request.getRequestDispatcher("/order-app/orderList.jsp").forward(request, response);
     }
 }

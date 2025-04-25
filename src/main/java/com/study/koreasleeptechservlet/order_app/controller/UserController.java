@@ -4,6 +4,7 @@ import com.study.koreasleeptechservlet.order_app.dao.UserDao;
 import com.study.koreasleeptechservlet.order_app.dao.impl.UserDaoImpl;
 import com.study.koreasleeptechservlet.order_app.entity.User;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +26,7 @@ public class UserController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        System.out.println("qweqwe");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
 
@@ -35,9 +37,16 @@ public class UserController extends HttpServlet {
         }
 
         User user = new User(name, email);
+        System.out.println(user.getName() + user.getEmail());
         boolean result = userDao.save(user);
         request.setAttribute("message", result ? "회원가입 성공" : "회원가입 실패");
-        request.getRequestDispatcher("/order-app/userForm.jsp").forward(request, response);
+
+        if (result) {
+            response.sendRedirect("user");
+        } else {
+            request.setAttribute("message", "회원가입 실패");
+            request.getRequestDispatcher("/order-app/userForm.jsp").forward(request, response);
+        }
     }
 
     @Override
